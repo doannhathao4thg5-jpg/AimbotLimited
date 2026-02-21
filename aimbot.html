@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIMBOT LIMITED 👾</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --neon: #00ffe7;
+  --neon2: #ff003c;
+  --neon3: #ffe600;
+  --dark: #050a0f;
+  --card: rgba(0,255,231,0.04);
+  --border: rgba(0,255,231,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--dark);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ─── BG GRID ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,231,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,231,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── SCANLINES ─── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0px, transparent 3px,
+    rgba(0,0,0,0.18) 3px, rgba(0,0,0,0.18) 4px
+  );
+  pointer-events: none; z-index: 1;
+  animation: scan 8s linear infinite;
+}
+@keyframes scan {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 400px; }
+}
+
+canvas#particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ─── CORNER DECORATIONS ─── */
+.corner { position: fixed; width: 60px; height: 60px; z-index: 2; }
+.corner::before, .corner::after { content: ''; position: absolute; background: var(--neon); }
+.corner::before { width: 100%; height: 2px; }
+.corner::after  { width: 2px; height: 100%; }
+.corner.tl { top: 20px; left: 20px; }
+.corner.tr { top: 20px; right: 20px; transform: scaleX(-1); }
+.corner.bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+.corner.br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+/* ─── WRAPPER ─── */
+#app { position: relative; z-index: 10; width: 100%; display: flex; justify-content: center; align-items: center; }
+
+/* ─── LOGIN ─── */
+#login-page {
+  width: 360px;
+  background: rgba(5,10,15,0.95);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 0 60px rgba(0,255,231,0.08), inset 0 0 40px rgba(0,255,231,0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+/* top bar accent */
+#login-page::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+  animation: shimmer 2.5s ease infinite;
+}
+@keyframes shimmer {
+  0%,100% { opacity: 0.4; } 50% { opacity: 1; }
+}
+
+.logo-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  margin-bottom: 24px;
+}
+
+.logo-hex {
+  position: relative; width: 72px; height: 72px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-hex svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.logo-hex .icon { font-size: 28px; color: var(--neon); position: relative; z-index: 2;
+  animation: pulse-icon 2s ease infinite; }
+@keyframes pulse-icon {
+  0%,100% { filter: drop-shadow(0 0 4px var(--neon)); }
+  50%      { filter: drop-shadow(0 0 14px var(--neon)); }
+}
+.hex-ring { animation: spin-hex 8s linear infinite; }
+@keyframes spin-hex { 100% { transform: rotate(360deg); } }
+
+.app-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 18px; font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--neon), #fff, var(--neon));
+  background-size: 200% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: title-shine 3s linear infinite;
+}
+@keyframes title-shine { 100% { background-position: 200% center; } }
+
+.app-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: rgba(0,255,231,0.5);
+  letter-spacing: 4px; text-transform: uppercase;
+}
+
+/* status bar */
+.status-bar {
+  display: flex; gap: 6px; align-items: center;
+  background: rgba(0,255,231,0.05);
+  border: 1px solid rgba(0,255,231,0.1);
+  border-radius: 2px; padding: 6px 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: rgba(0,255,231,0.6);
+  margin-bottom: 20px;
+}
+.status-dot { width: 6px; height: 6px; background: #00ff6a; border-radius: 50%;
+  box-shadow: 0 0 6px #00ff6a; animation: blink 1.2s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+/* input */
+.input-wrap { position: relative; margin-bottom: 14px; }
+.input-label {
+  display: block;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: rgba(0,255,231,0.5);
+  letter-spacing: 2px; margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.input-wrap input {
+  width: 100%; padding: 12px 40px 12px 14px;
+  background: rgba(0,255,231,0.04);
+  border: 1px solid rgba(0,255,231,0.2);
+  border-radius: 3px; color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px; outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  letter-spacing: 2px;
+}
+.input-wrap input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 20px rgba(0,255,231,0.15);
+}
+.input-wrap input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+.input-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: rgba(0,255,231,0.4); font-size: 14px; }
+
+/* login btn */
+.btn-login {
+  width: 100%; padding: 13px;
+  background: transparent;
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  font-family: 'Orbitron', monospace;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 4px; cursor: pointer;
+  border-radius: 3px;
+  position: relative; overflow: hidden;
+  transition: color 0.3s;
+}
+.btn-login::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--neon);
+  transform: translateX(-101%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  z-index: 0;
+}
+.btn-login:hover::before { transform: translateX(0); }
+.btn-login:hover { color: #000; }
+.btn-login span { position: relative; z-index: 1; }
+
+/* forgot */
+.forgot-section {
+  display: flex; justify-content: center; align-items: center; gap: 6px;
+  margin-top: 14px;
+  font-size: 12px; color: rgba(255,255,255,0.35);
+  font-family: 'Share Tech Mono', monospace;
+}
+.forgot-section a { color: var(--neon); text-decoration: none; cursor: pointer; }
+.forgot-section a:hover { text-shadow: 0 0 8px var(--neon); }
+
+.support-panel {
+  display: none; margin-top: 14px; gap: 8px; flex-direction: column;
+  animation: fadeDown 0.4s ease;
+}
+@keyframes fadeDown { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+
+.support-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: rgba(0,255,231,0.04);
+  border: 1px solid rgba(0,255,231,0.12);
+  border-radius: 3px; color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  transition: border-color 0.3s, background 0.3s;
+}
+.support-btn:hover { border-color: var(--neon); background: rgba(0,255,231,0.08); }
+.support-btn i { color: var(--neon); width: 20px; text-align: center; }
+.support-btn small { display: block; color: rgba(255,255,255,0.35); font-size: 11px; margin-top: 2px; font-family: 'Share Tech Mono', monospace; }
+
+.bottom-tags {
+  display: flex; justify-content: center; gap: 12px;
+  margin-top: 20px;
+}
+.tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 1px;
+  color: rgba(0,255,231,0.35);
+  border: 1px solid rgba(0,255,231,0.1);
+  padding: 3px 8px; border-radius: 2px;
+}
+
+/* ─── NOTIFICATION OVERLAY ─── */
+#notification {
+  display: none;
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.85);
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(6px);
+}
+#notification.show { display: flex; }
+
+.notif-box {
+  width: 280px; text-align: center;
+  background: rgba(5,10,15,0.98);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 32px 24px;
+  position: relative;
+  animation: notif-in 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes notif-in { from { opacity:0; transform:scale(0.85); } to { opacity:1; transform:scale(1); } }
+.notif-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+}
+
+.scan-ring {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,255,231,0.15);
+  position: relative; margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.scan-ring::before {
+  content: ''; position: absolute; inset: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--neon);
+  animation: ring-spin 1s linear infinite;
+}
+.scan-ring::after {
+  content: ''; position: absolute; inset: -10px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: rgba(0,255,231,0.3);
+  animation: ring-spin 1.5s linear infinite reverse;
+}
+@keyframes ring-spin { 100% { transform: rotate(360deg); } }
+.scan-ring.success::before { animation: none; border-color: #00ff6a; }
+.scan-ring.success::after  { animation: none; border-color: rgba(0,255,106,0.3); }
+.scan-ring.error::before   { animation: none; border-color: var(--neon2); }
+
+.scan-icon { font-size: 28px; color: var(--neon); }
+.scan-ring.success .scan-icon { color: #00ff6a; }
+.scan-ring.error .scan-icon   { color: var(--neon2); }
+
+.scan-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 3px;
+  color: rgba(0,255,231,0.5); text-transform: uppercase;
+  margin-bottom: 8px;
+}
+#notif-msg {
+  font-size: 14px; color: rgba(255,255,255,0.8);
+  font-family: 'Rajdhani', sans-serif; font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ─── MAIN MENU ─── */
+#main-menu {
+  display: none;
+  width: 380px;
+  max-height: 92vh;
+  background: rgba(5,10,15,0.97);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,255,231,0.2) transparent;
+}
+#main-menu::-webkit-scrollbar { width: 4px; }
+#main-menu::-webkit-scrollbar-track { background: transparent; }
+#main-menu::-webkit-scrollbar-thumb { background: rgba(0,255,231,0.2); border-radius: 2px; }
+#main-menu::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon), var(--neon2), transparent);
+}
+
+.menu-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0,255,231,0.1);
+  margin-bottom: 16px;
+}
+.menu-logo { font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--neon), #fff, var(--neon));
+  background-size: 200% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: title-shine 3s linear infinite;
+}
+.menu-badges { display: flex; gap: 6px; }
+.badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; padding: 3px 8px;
+  border-radius: 2px; letter-spacing: 1px;
+}
+.badge.online { background: rgba(0,255,106,0.1); border: 1px solid rgba(0,255,106,0.3); color: #00ff6a; }
+.badge.ver    { background: rgba(0,255,231,0.08); border: 1px solid rgba(0,255,231,0.2); color: var(--neon); }
+
+/* user info */
+.user-card {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(0,255,231,0.04);
+  border: 1px solid rgba(0,255,231,0.1);
+  border-radius: 3px; padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.user-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(0,255,231,0.1);
+  border: 1px solid rgba(0,255,231,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--neon);
+}
+.user-info .name {
+  font-size: 15px; font-weight: 700; letter-spacing: 1px;
+}
+.user-info .role {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: var(--neon); letter-spacing: 2px;
+}
+.user-info .exp {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 1px;
+}
+
+/* section label */
+.section-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: rgba(0,255,231,0.4);
+  text-transform: uppercase;
+  margin: 14px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(0,255,231,0.2), transparent);
+}
+
+/* tab item */
+.tab-item {
+  background: rgba(0,255,231,0.02);
+  border: 1px solid rgba(0,255,231,0.08);
+  border-radius: 3px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.tab-item.active { border-color: rgba(0,255,231,0.25); }
+
+.tab-header {
+  padding: 13px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; user-select: none;
+  transition: background 0.2s;
+}
+.tab-header:hover { background: rgba(0,255,231,0.04); }
+.tab-header-left { display: flex; align-items: center; gap: 10px; }
+.tab-icon {
+  width: 28px; height: 28px;
+  background: rgba(0,255,231,0.08);
+  border: 1px solid rgba(0,255,231,0.2);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--neon);
+}
+.tab-title {
+  font-size: 14px; font-weight: 700; letter-spacing: 1px;
+}
+.tab-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 1px;
+}
+.tab-arrow {
+  color: rgba(0,255,231,0.4); font-size: 12px;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.tab-item.active .tab-arrow { transform: rotate(180deg); color: var(--neon); }
+
+.tab-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+  background: rgba(0,0,0,0.2);
+}
+.tab-item.active .tab-content { max-height: 600px; }
+.tab-inner { padding: 8px 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+
+/* function row */
+.fn-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px;
+  background: rgba(5,10,15,0.8);
+  border: 1px solid rgba(0,255,231,0.06);
+  border-radius: 3px;
+  border-left: 2px solid rgba(0,255,231,0.3);
+  transition: border-left-color 0.2s, background 0.2s;
+}
+.fn-row:hover { background: rgba(0,255,231,0.04); border-left-color: var(--neon); }
+.fn-name { font-size: 13px; font-weight: 600; }
+.fn-tag {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: rgba(255,255,255,0.25); display: block; margin-top: 1px;
+}
+
+/* iPhone toggle */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: #1a1a2e; border-radius: 34px;
+  border: 1px solid rgba(0,255,231,0.2);
+  transition: 0.35s;
+}
+.slider::before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px;
+  left: 2px; bottom: 2px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%; transition: 0.35s;
+}
+input:checked + .slider { background: rgba(0,255,231,0.15); border-color: var(--neon); box-shadow: 0 0 12px rgba(0,255,231,0.3); }
+input:checked + .slider::before { transform: translateX(20px); background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+
+/* action btn */
+.action-btn {
+  width: 100%; padding: 11px;
+  background: transparent;
+  border: 1px solid rgba(0,255,231,0.25);
+  color: var(--neon);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px; letter-spacing: 3px;
+  cursor: pointer; border-radius: 3px;
+  transition: background 0.3s, box-shadow 0.3s;
+  text-transform: uppercase;
+  position: relative; overflow: hidden;
+}
+.action-btn:hover { background: rgba(0,255,231,0.08); box-shadow: 0 0 20px rgba(0,255,231,0.15); }
+.action-btn.fire {
+  border-color: var(--neon2); color: var(--neon2);
+}
+.action-btn.fire:hover { background: rgba(255,0,60,0.08); box-shadow: 0 0 20px rgba(255,0,60,0.2); }
+
+/* stat cards */
+.stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.stat-card {
+  background: rgba(0,255,231,0.04);
+  border: 1px solid rgba(0,255,231,0.1);
+  border-radius: 3px; padding: 10px 12px;
+  text-align: center;
+}
+.stat-val { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 700; color: var(--neon); }
+.stat-key { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; }
+
+/* ─── GLITCH ─── */
+@keyframes glitch1 {
+  0%,100% { clip-path: inset(0 0 100% 0); }
+  5%  { clip-path: inset(10% 0 80% 0); transform: translateX(-4px); }
+  10% { clip-path: inset(40% 0 50% 0); transform: translateX(4px); }
+  15% { clip-path: inset(80% 0 10% 0); transform: translateX(-2px); }
+  20% { clip-path: inset(0 0 100% 0); }
+}
+.glitch-wrap { position: relative; display: inline-block; }
+.glitch-wrap::before, .glitch-wrap::after {
+  content: attr(data-text); position: absolute; top: 0; left: 0;
+  width: 100%; color: var(--neon);
+  font-family: inherit; font-size: inherit; font-weight: inherit;
+  letter-spacing: inherit;
+  background: transparent;
+}
+.glitch-wrap::before { color: var(--neon2); animation: glitch1 4s infinite; }
+.glitch-wrap::after  { color: #00aaff; animation: glitch1 4s infinite 0.1s; }
+</style>
+</head>
+<body>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<canvas id="particles"></canvas>
+
+<div id="app">
+
+  <!-- ═══ LOGIN ═══ -->
+  <div id="login-page">
+    <div class="logo-wrap">
+      <div class="logo-hex">
+        <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon class="hex-ring" points="36,4 64,20 64,52 36,68 8,52 8,20" stroke="rgba(0,255,231,0.3)" stroke-width="1" fill="none"/>
+          <polygon points="36,12 57,24 57,48 36,60 15,48 15,24" stroke="rgba(0,255,231,0.15)" stroke-width="1" fill="none"/>
+        </svg>
+        <i class="fas fa-crosshairs icon"></i>
+      </div>
+      <div class="app-title glitch-wrap" data-text="AIMBOT LIMITED">AIMBOT LIMITED</div>
+      <div class="app-sub">XMG VN // v3.1.4</div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span>SERVER: ONLINE</span>
+      <span style="margin-left:auto;">PING: 14ms</span>
+    </div>
+
+    <div class="input-wrap">
+      <span class="input-label"><i class="fas fa-key"></i> &nbsp;License Key</span>
+      <input type="password" id="key-input" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="30">
+      <i class="fas fa-shield-alt input-icon"></i>
+    </div>
+
+    <button class="btn-login" onclick="checkKey()">
+      <span><i class="fas fa-unlock-alt"></i> &nbsp;XÁC THỰC KEY</span>
+    </button>
+
+    <div class="forgot-section">
+      Chưa có key? &nbsp;<a onclick="toggleForgot()">Quên Key / Mua Key</a>
+    </div>
+
+    <div id="support-section" class="support-panel">
+      <a href="https://www.tiktok.com/@xmgnaruto?_r=1&_t=ZS-9450DentKPQ" class="support-btn" target="_blank">
+        <i class="fab fa-tiktok"></i>
+        <div>
+          <div><strong>TikTok XMG VN</strong></div>
+          <small>Nhắn tin để mua key & hỗ trợ 24/7</small>
+        </div>
+      </a>
+      <a href="https://x.com/nhathaotgamexmg" class="support-btn" target="_blank">
+        <i class="fab fa-x-twitter"></i>
+        <div>
+          <div><strong>X (Twitter) XMG VN</strong></div>
+          <small>Follow để cập nhật key miễn phí</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="bottom-tags">
+      <span class="tag">UNDETECTED</span>
+      <span class="tag">ANTI-BAN</span>
+      <span class="tag">AUTO-UPDATE</span>
+    </div>
+  </div>
+
+  <!-- ═══ NOTIFICATION ═══ -->
+  <div id="notification">
+    <div class="notif-box">
+      <div class="scan-label">ĐANG XÁC THỰC HỆ THỐNG</div>
+      <div id="scan-ring" class="scan-ring">
+        <i id="scan-icon" class="fas fa-fingerprint scan-icon"></i>
+      </div>
+      <div id="notif-msg"></div>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN MENU ═══ -->
+  <div id="main-menu">
+    <div class="menu-header">
+      <div class="menu-logo">AIMBOT LTD</div>
+      <div class="menu-badges">
+        <span class="badge online"><i class="fas fa-circle" style="font-size:7px;"></i> ONLINE</span>
+        <span class="badge ver">v3.1.4</span>
+      </div>
+    </div>
+
+    <div class="user-card">
+      <div class="user-avatar"><i class="fas fa-user-secret"></i></div>
+      <div class="user-info">
+        <div class="name">XMG_ADMIN</div>
+        <div class="role">◈ &nbsp;ADMIN ACCESS</div>
+        <div class="exp">Hết hạn: 31/12/2025 · Vĩnh viễn</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-val">99%</div>
+        <div class="stat-key">HIỆU QUẢ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="ping-val">12ms</div>
+        <div class="stat-key">PING</div>
+      </div>
+    </div>
+
+    <!-- GAME BOOSTER -->
+    <div class="section-label">Tối ưu hoá</div>
+    <div class="tab-item">
+      <div class="tab-header" onclick="toggleTab(this)">
+        <div class="tab-header-left">
+          <div class="tab-icon"><i class="fas fa-rocket"></i></div>
+          <div>
+            <div class="tab-title">GAME BOOSTER</div>
+            <div class="tab-sub">CPU / FPS / MEMORY</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-down tab-arrow"></i>
+      </div>
+      <div class="tab-content">
+        <div class="tab-inner">
+          <button class="action-btn" onclick="activateBooster()">
+            <i class="fas fa-bolt"></i> &nbsp;KÍCH HOẠT TOÀN LỰC
+          </button>
+          <div class="fn-row">
+            <div><div class="fn-name">Tăng FPS Tối Đa</div><span class="fn-tag">PERFORMANCE</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Ổn Định Pin</div><span class="fn-tag">BATTERY</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Tối Ưu CPU</div><span class="fn-tag">PROCESSOR</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Giải Phóng RAM</div><span class="fn-tag">MEMORY</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AIM -->
+    <div class="section-label">Aim Assist</div>
+    <div class="tab-item">
+      <div class="tab-header" onclick="toggleTab(this)">
+        <div class="tab-header-left">
+          <div class="tab-icon" style="border-color:rgba(255,0,60,0.4);color:var(--neon2)"><i class="fas fa-crosshairs"></i></div>
+          <div>
+            <div class="tab-title">AIM MODULE</div>
+            <div class="tab-sub">AIMBOT / AIMLOCK</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-down tab-arrow"></i>
+      </div>
+      <div class="tab-content">
+        <div class="tab-inner">
+          <div class="fn-row">
+            <div><div class="fn-name">Aimlock</div><span class="fn-tag">AUTO-LOCK TARGET</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Aimbot</div><span class="fn-tag">AUTO-AIM</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Aimlock Headshot</div><span class="fn-tag">HEAD PRIORITY</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Silent Aim</div><span class="fn-tag">UNDETECTABLE</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section-label">Cài đặt nâng cao</div>
+    <div class="tab-item">
+      <div class="tab-header" onclick="toggleTab(this)">
+        <div class="tab-header-left">
+          <div class="tab-icon" style="border-color:rgba(255,230,0,0.3);color:var(--neon3)"><i class="fas fa-sliders-h"></i></div>
+          <div>
+            <div class="tab-title">COMBAT SETTINGS</div>
+            <div class="tab-sub">RECOIL / BULLET / SENSE</div>
+          </div>
+        </div>
+        <i class="fas fa-chevron-down tab-arrow"></i>
+      </div>
+      <div class="tab-content">
+        <div class="tab-inner">
+          <div class="fn-row">
+            <div><div class="fn-name">Đạn Thẳng</div><span class="fn-tag">BULLET STRAIGHT</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Giảm Recoil</div><span class="fn-tag">NO RECOIL</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Fix Giật</div><span class="fn-tag">ANTI-SHAKE</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Tăng Nhạy Màn</div><span class="fn-tag">SENSITIVITY+</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Nhẹ Tâm</div><span class="fn-tag">SMOOTH AIM</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="fn-row">
+            <div><div class="fn-name">Fix Lố</div><span class="fn-tag">OVER-AIM FIX</span></div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <button class="action-btn fire" style="margin-top:4px;">
+            <i class="fas fa-save"></i> &nbsp;LƯU CẤU HÌNH
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:8px"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── PARTICLES ───
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+const dots = Array.from({length: 80}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  vx: (Math.random() - 0.5) * 0.3,
+  vy: (Math.random() - 0.5) * 0.3,
+  r: Math.random() * 1.5 + 0.5,
+  a: Math.random()
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  dots.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(0,255,231,${p.a * 0.4})`;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+  });
+  // connect nearby dots
+  for (let i = 0; i < dots.length; i++) {
+    for (let j = i+1; j < dots.length; j++) {
+      const dx = dots[i].x - dots[j].x;
+      const dy = dots[i].y - dots[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 100) {
+        ctx.beginPath();
+        ctx.moveTo(dots[i].x, dots[i].y);
+        ctx.lineTo(dots[j].x, dots[j].y);
+        ctx.strokeStyle = `rgba(0,255,231,${0.05 * (1 - dist/100)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// ─── PING ANIMATION ───
+setInterval(() => {
+  const v = document.getElementById('ping-val');
+  if (v) v.textContent = (10 + Math.floor(Math.random() * 8)) + 'ms';
+}, 1500);
+
+// ─── LOGIN ───
+function checkKey() {
+  const key = document.getElementById('key-input').value.trim();
+  const notif = document.getElementById('notification');
+  const ring = document.getElementById('scan-ring');
+  const icon = document.getElementById('scan-icon');
+  const msg  = document.getElementById('notif-msg');
+
+  ring.className = 'scan-ring';
+  icon.className = 'fas fa-fingerprint scan-icon';
+  msg.textContent = 'Đang xác thực license...';
+  notif.classList.add('show');
+
+  setTimeout(() => {
+    if (key === "Xmgadminproaimbot") {
+      msg.textContent = '✓ Key hợp lệ. Đang khởi động hệ thống...';
+      ring.classList.add('success');
+      icon.className = 'fas fa-check scan-icon';
+      setTimeout(() => {
+        document.getElementById('login-page').style.display = 'none';
+        notif.classList.remove('show');
+        const menu = document.getElementById('main-menu');
+        menu.style.display = 'block';
+        menu.style.animation = 'notif-in 0.4s cubic-bezier(0.4,0,0.2,1)';
+      }, 1400);
+    } else {
+      msg.textContent = '✗ Key không hợp lệ. Vui lòng kiểm tra lại hoặc liên hệ hỗ trợ.';
+      ring.classList.add('error');
+      icon.className = 'fas fa-times scan-icon';
+      setTimeout(() => notif.classList.remove('show'), 2200);
+    }
+  }, 1000);
+}
+
+document.getElementById('key-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkKey(); });
+
+function toggleForgot() {
+  const s = document.getElementById('support-section');
+  s.style.display = s.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function toggleTab(header) {
+  header.parentElement.classList.toggle('active');
+}
+
+function activateBooster() {
+  const btn = event.currentTarget;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> &nbsp;ĐANG KÍCH HOẠT...';
+  setTimeout(() => {
+    btn.innerHTML = '<i class="fas fa-check"></i> &nbsp;ĐÃ KÍCH HOẠT ✓';
+    btn.style.borderColor = '#00ff6a';
+    btn.style.color = '#00ff6a';
+  }, 1200);
+}
+</script>
+</body>
+</html>
